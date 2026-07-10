@@ -187,11 +187,11 @@ PASSO 7 — Criar o evento de lembrete no Google Calendar
 ────────────────────────────────────────────────────────────
 Crie um evento no calendário primário. NÃO preencha description — só o título:
   • summary:          "HydroCenter Piscinas — Relatório pronto para envio"
-  • startTime:        a data de HOJE (dia da execução) às 09:00
-  • endTime:          a data de HOJE às 09:30
+  • startTime:        a data de HOJE (dia da execução) às 09:10
+  • endTime:          a data de HOJE às 09:40
   • timeZone:         "America/Sao_Paulo"
   • overrideReminders: [ { "method": "popup", "minutes": 0 } ]
-O evento é a notificação das 09:00 para o humano revisar e disparar o rascunho.
+O evento é a notificação das 09:10 para o humano revisar e disparar o rascunho.
 
 ────────────────────────────────────────────────────────────
 PASSO 8 — Resumo final
@@ -214,7 +214,7 @@ Se algo falhou, diga exatamente O QUÊ e em QUAL passo, e não crie o rascunho.
 
 - **Horário do gatilho:** defina na própria Cloud Routine (segunda-feira, fuso
   `America/Sao_Paulo`). O rascunho é criado assim que a Routine roda; o evento
-  do Calendar é sempre às **09:00** do dia da execução.
+  do Calendar é sempre às **09:10** do dia da execução.
 - **Assunto e destino** ficam no `CLIENTE` de `clientes/hydrocenter.py` (fonte
   única). Para trocar, edite lá — o manifest e o prompt continuam iguais.
 - **Período** é calculado sozinho (`calcular_periodo`): semana anterior
