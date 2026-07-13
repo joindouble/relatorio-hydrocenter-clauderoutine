@@ -8,7 +8,7 @@
       "channel": "Google",
       "account": "Customer 5672106894",
       "campaign": "Rede de Pesquisa [ exemplo ]",
-      "objective": "MAXIMIZE_CONVERSIONS",
+      "objective": "MAXIMIZE_CLICKS",
       "campaign_id": "exemplo-0000-0000-0000-hydrocenter",
       "conversions": 9,
       "impressions": 6258,
@@ -16,19 +16,49 @@
       "campaign_status": "ENABLED",
       "cost_per_conversion": 13.33,
       "serie_diaria": [
-        {"date": "2026-07-06", "spend": 22.0},
-        {"date": "2026-07-07", "spend": 18.5},
-        {"date": "2026-07-08", "spend": 25.0},
-        {"date": "2026-07-09", "spend": 21.5},
-        {"date": "2026-07-10", "spend": 33.0}
+        {
+          "date": "2026-07-06",
+          "spend": 22.0
+        },
+        {
+          "date": "2026-07-07",
+          "spend": 18.5
+        },
+        {
+          "date": "2026-07-08",
+          "spend": 25.0
+        },
+        {
+          "date": "2026-07-09",
+          "spend": 21.5
+        },
+        {
+          "date": "2026-07-10",
+          "spend": 33.0
+        }
       ]
     }
   ],
   "por_dia": [
-    {"date": "2026-07-06", "spend": 22.0},
-    {"date": "2026-07-07", "spend": 18.5},
-    {"date": "2026-07-08", "spend": 25.0},
-    {"date": "2026-07-09", "spend": 21.5},
-    {"date": "2026-07-10", "spend": 33.0}
+    {
+      "date": "2026-07-06",
+      "spend": 22.0
+    },
+    {
+      "date": "2026-07-07",
+      "spend": 18.5
+    },
+    {
+      "date": "2026-07-08",
+      "spend": 25.0
+    },
+    {
+      "date": "2026-07-09",
+      "spend": 21.5
+    },
+    {
+      "date": "2026-07-10",
+      "spend": 33.0
+    }
   ]
 }
