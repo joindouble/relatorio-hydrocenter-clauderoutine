@@ -34,7 +34,7 @@ CLIENTE = {
     "nome": "HydroCenter Piscinas",
     "email_destino": "admin@hydrocenterpiscinas.com.br",
     "email_assunto": "Relatório de Desempenho Tráfego Pago HydroCenter Piscinas",
-    "meta_ad_account_id": "",  # HydroCenter não tem Meta Ads no momento
+    "meta_ad_account_id": "1233849868807941",  # [BM 02] CA - HYDROCENTER
     "google_ads_customer_id": "567-210-6894",
     "flyweel_account": "Customer 5672106894",  # nome da conta na Flyweel (trava Google)
     # Nome/contato/logo da agência vêm dos defaults do report_engine (AGENCIA_*).

@@ -27,7 +27,7 @@ relatorio-hydrocenter-clauderoutine/
 ```
 
 > Repositório **específico da HydroCenter Piscinas**. Cliente só tem **Google
-> Ads** (sem Meta). Mesmo motor/template do repo da R&M; muda só o script de
+> Ads** + **Meta Ads**. Mesmo motor/template do repo da R&M; muda só o script de
 > cliente (`clientes/hydrocenter.py`) e o prompt.
 
 ## Como rodar (teste local)
@@ -145,7 +145,7 @@ Cliente deste repositório:
 
 | cliente | Meta Ads | Google Ads |
 |---|---|---|
-| HydroCenter Piscinas | — (não tem) | 567-210-6894 (`Customer 5672106894`) |
+| HydroCenter Piscinas | 1233849868807941 | 567-210-6894 (`Customer 5672106894`) |
 
 ## Pendências
 
@@ -156,3 +156,18 @@ Cliente deste repositório:
   deixar de ser só rascunho) anexar a logo como inline CID.
 - **Fixture real** — `dados_exemplo/hydrocenter_google_raw.json` é um exemplo
   sintético (só p/ teste local); a Routine traz o dado real na execução.
+
+### Canal da campanha de mensagens (WhatsApp x Direct)
+
+Campanha de mensagem pode mandar a conversa pro **WhatsApp** ou pro **Direct do
+Instagram**. As métricas são as mesmas; o que muda é o rótulo mostrado ao
+cliente. O script decide **por campanha** (as duas podem rodar juntas):
+
+1. campo `destination_type` do Meta, se vier no JSON (`WHATSAPP` /
+   `INSTAGRAM_DIRECT` / `MESSENGER`);
+2. **nome da campanha** — é o sinal usado na prática: `[MENSAGENS] [DIRECT]` →
+   "Mensagens no Direct"; `[MENSAGENS] [WHATSAPP]` → "Mensagens no WhatsApp";
+3. rótulo de resultado da API;
+4. sem pista nenhuma → rótulo genérico "Mensagens" (nunca chuta o canal errado).
+
+Por isso a **nomenclatura das campanhas deve levar o canal no nome**.

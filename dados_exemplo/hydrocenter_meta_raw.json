@@ -1,0 +1,75 @@
+[
+  {
+    "id": "120254555226020397",
+    "name": "[TRÁFEGO PERFIL]",
+    "objective": "LINK_CLICKS",
+    "effective_status": "ACTIVE",
+    "amount_spent": "R$1,91 BRL",
+    "impressions": "272",
+    "clicks": "6",
+    "reach": "270",
+    "cpc": "R$0,32 BRL",
+    "cpm": "R$7,02 BRL",
+    "ctr": "2,21%",
+    "results": {"value": "5 (Instagram profile visits)"},
+    "cost_per_result": {"value": "R$0,38 BRL (Instagram profile visits)"},
+    "serie_diaria": [
+      {"date": "24 de julho de 2026", "spend": 1.91}
+    ]
+  },
+  {
+    "id": "120254621755300397",
+    "name": "[MENSAGENS] [DIRECT]",
+    "objective": "OUTCOME_ENGAGEMENT",
+    "destination_type": "INSTAGRAM_DIRECT",
+    "effective_status": "ACTIVE",
+    "amount_spent": "R$12,40 BRL",
+    "impressions": "980",
+    "clicks": "24",
+    "reach": "870",
+    "cpc": "R$0,52 BRL",
+    "cpm": "R$12,65 BRL",
+    "ctr": "2,45%",
+    "results": {"value": "4 (Messaging conversations started)"},
+    "cost_per_result": {"value": "R$3,10 BRL (Messaging conversations started)"},
+    "serie_diaria": [
+      {"date": "24 de julho de 2026", "spend": 6.20},
+      {"date": "25 de julho de 2026", "spend": 6.20}
+    ]
+  },
+  {
+    "id": "120254900000000000",
+    "name": "[MENSAGENS] [WHATSAPP]",
+    "objective": "OUTCOME_ENGAGEMENT",
+    "destination_type": "WHATSAPP",
+    "effective_status": "ACTIVE",
+    "amount_spent": "R$18,70 BRL",
+    "impressions": "1.412",
+    "clicks": "39",
+    "reach": "1.190",
+    "cpc": "R$0,48 BRL",
+    "cpm": "R$13,24 BRL",
+    "ctr": "2,76%",
+    "results": {"value": "6 (Messaging conversations started)"},
+    "cost_per_result": {"value": "R$3,12 BRL (Messaging conversations started)"},
+    "serie_diaria": [
+      {"date": "24 de julho de 2026", "spend": 9.35},
+      {"date": "25 de julho de 2026", "spend": 9.35}
+    ]
+  },
+  {
+    "id": "120254504403630397",
+    "name": "Nova campanha de Engajamento",
+    "objective": "OUTCOME_ENGAGEMENT",
+    "effective_status": "PAUSED",
+    "amount_spent": "R$0,00 BRL",
+    "impressions": "0",
+    "clicks": "0",
+    "reach": "0",
+    "cpc": "Not available",
+    "cpm": "Not available",
+    "ctr": "Not available",
+    "results": {"value": "0 (Messaging conversations started)"},
+    "cost_per_result": {"value": "R$0,00 BRL (Messaging conversations started)"}
+  }
+]

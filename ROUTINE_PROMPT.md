@@ -3,8 +3,8 @@
 > Cole o conteúdo do bloco abaixo (tudo dentro de `═══ PROMPT ═══`) como o prompt
 > da Cloud Routine. Gatilho: toda **segunda-feira**, no horário que você definir,
 > fuso `America/Sao_Paulo`. Conectores necessários na Routine: **Repositório
-> GitHub** (este repo), **Flyweel (Google Ads)**, **Gmail**,
-> **Google Calendar**. (HydroCenter só tem Google Ads — sem conector Meta.)
+> GitHub** (este repo), **Meta Ads**, **Flyweel (Google Ads)**, **Gmail**,
+> **Google Calendar**.
 >
 > O prompt é **determinístico**: a Routine executa apenas os PASSOS 1→8, nesta
 > ordem, e nada além. Toda a matemática/HTML é feita pelo script Python; a IA só
@@ -27,13 +27,13 @@ REGRAS INVIOLÁVEIS (valem o tempo todo)
    Python. Seu papel é só: buscar os dados brutos via MCP, salvar nos arquivos
    JSON indicados, rodar o script e criar o rascunho/evento.
 2. Você NÃO edita nenhum arquivo .py nem o template.html. Não altere código.
-3. Acesse SOMENTE a conta do cliente: Google pelo `flyweel_account` do
-   manifest. NUNCA liste, varra ou toque em outra conta de anúncio.
-   (HydroCenter não tem Meta — não acesse nenhuma conta Meta.)
-4. Só ferramentas destes 4 grupos: (a) terminal/python, (b) Flyweel
-   `query_metrics`, (c) Gmail criar rascunho, (d) Google Calendar criar evento.
-   Nenhuma outra — nada de ativar/pausar/criar/editar campanha, listar contas,
-   ferramentas de Meta Ads, etc.
+3. Acesse SOMENTE a conta do cliente: Meta pelo `meta_ad_account_id` e Google
+   pelo `flyweel_account` do manifest. NUNCA liste, varra ou toque em outra
+   conta de anúncio.
+4. Só ferramentas destes 5 grupos: (a) terminal/python, (b) Flyweel
+   `query_metrics`, (c) Meta `ads_get_field_context` e `ads_get_ad_entities`,
+   (d) Gmail criar rascunho, (e) Google Calendar criar evento. Nenhuma outra —
+   nada de ativar/pausar/criar/editar campanha, listar contas, etc.
 5. É RASCUNHO (draft). NUNCA envie o e-mail.
 6. Datas vêm do manifest (PASSO 1). Não calcule período por conta própria.
 7. Dado real sempre: NUNCA invente campanha, valor ou métrica. Se faltar dado,
@@ -46,15 +46,15 @@ REGRAS INVIOLÁVEIS (valem o tempo todo)
 ────────────────────────────────────────────────────────────
 CONTEXTO (leia uma vez)
 ────────────────────────────────────────────────────────────
-Projeto: automação do relatório semanal de tráfego pago (Google Ads) da agência
-Double para o cliente HydroCenter Piscinas. Este cliente só tem Google Ads (sem
-Meta). O entregável é um RASCUNHO de e-mail no Gmail com o relatório em HTML
+Projeto: automação do relatório semanal de tráfego pago (Meta Ads + Google Ads) da agência
+Double para o cliente HydroCenter Piscinas. O entregável é um RASCUNHO de e-mail no Gmail com o relatório em HTML
 (revisão humana antes de enviar) + um evento de lembrete no Google Calendar. O
 repositório já está disponível no ambiente; trabalhe na raiz do repo
 `relatorio-hydrocenter-clauderoutine`.
 
-Como o dado flui: você busca os números brutos do Google Ads e salva em
-`dados/hydrocenter_google_raw.json`. O script `clientes/hydrocenter.py` lê esse
+Como o dado flui: você busca os números brutos das plataformas e salva em dois
+arquivos JSON (`dados/hydrocenter_meta_raw.json` e
+`dados/hydrocenter_google_raw.json`). O script `clientes/hydrocenter.py` lê esses
 JSON, aplica as regras (só campanha com investimento > 0 na semana; segmentação
 por conta; nomes de métrica amigáveis; gráficos 100% HTML) e grava o relatório
 em `output/relatorio_hydrocenter.html`. Você então cria o rascunho com esse HTML.
@@ -76,11 +76,12 @@ vieram, sem alterar):
     todas as buscas; não recalcule.
   • periodo.label                → rótulo do período (ex.: "Semana de 06 a 12
     de julho de 2026").
-  • meta_ad_account_id           → vem VAZIO (HydroCenter não tem Meta); ignore.
+  • meta_ad_account_id           → conta Meta do cliente.
   • google_ads_customer_id       → (referência) conta Google do cliente.
   • flyweel_account              → nome da conta na Flyweel (filtro do Google).
   • email_destino                → destinatário do rascunho.
   • email_assunto                → assunto do rascunho.
+  • caminho_meta_json            → onde salvar o JSON do Meta.
   • caminho_google_json          → onde salvar o JSON do Google.
   • output_html                  → caminho do HTML gerado.
 
@@ -138,13 +139,54 @@ Regras do PASSO 2:
     exatamente {"campanhas": [], "por_dia": []}.
 
 ────────────────────────────────────────────────────────────
-PASSO 3 — Meta Ads: NÃO SE APLICA (pule)
+PASSO 3 — Buscar dados do Meta Ads
 ────────────────────────────────────────────────────────────
-A HydroCenter Piscinas NÃO tem conta Meta Ads (no manifest,
-`meta_ad_account_id` vem vazio). PULE completamente esta etapa: não use
-`ads_get_field_context` nem `ads_get_ad_entities`, e NÃO crie o arquivo
-<caminho_meta_json>. O script já trata a ausência de Meta (lista vazia) e o
-relatório sai só com a plataforma Google. Não busque nenhuma conta Meta.
+3a. OBRIGATÓRIO antes de buscar: verifique os campos com
+    `ads_get_field_context` para: amount_spent, impressions, clicks, reach,
+    cpc, cpm, ctr, results, cost_per_result, objective, effective_status.
+
+3b. `ads_get_ad_entities` para a conta <meta_ad_account_id>, no nível de
+    CAMPANHA, no período <periodo.start>..<periodo.end>, pedindo o
+    detalhamento diário (time_increment = 1) para obter a série diária de
+    gasto por campanha.
+
+Monte o arquivo <caminho_meta_json> como um ARRAY de campanhas, cada uma:
+    {
+      "id": "<id>",
+      "name": "<nome exato da campanha>",
+      "objective": "<OUTCOME_*, LINK_CLICKS ou legado (MESSAGES/POST_ENGAGEMENT/...)>",
+      "effective_status": "<ACTIVE/PAUSED/...>",
+      "amount_spent": "R$12,40 BRL",
+      "impressions": "980",
+      "clicks": "24",
+      "reach": "870",
+      "cpc": "R$0,52 BRL",
+      "cpm": "R$12,65 BRL",
+      "ctr": "2,45%",
+      "cost_per_result": {"value": "R$3,10 BRL (Messaging conversations started)"},
+      "results": {"value": "4 (Messaging conversations started)"},
+      "serie_diaria": [ {"date": "24 de julho de 2026", "spend": 6.20}, ... ]
+    }
+
+Regras do PASSO 3:
+  • Grave os valores EXATAMENTE como a API devolve — texto formatado
+    ("R$12,40 BRL", "1.412", "2,45%"), "Not available", ou o formato lista
+    [{"indicator": "..."}]. NÃO limpe, NÃO converta para número: o script faz
+    todo o parsing (inclusive o ponto como separador de milhar do pt-BR).
+  • "name" é OBRIGATÓRIO e deve vir LITERAL: o script usa o nome da campanha
+    para descobrir se a campanha de mensagem é WHATSAPP ou DIRECT (padrão de
+    nomenclatura "[MENSAGENS] [DIRECT]" / "[MENSAGENS] [WHATSAPP]"). Não
+    reescreva, não normalize, não traduza o nome.
+  • "serie_diaria" = gasto por dia (do time_increment:1). A data pode vir em
+    PT-BR ("24 de julho de 2026") — tudo bem, o script entende.
+  • Traga TODAS as campanhas da conta que tiveram entrega no período; o script
+    decide quais aparecem (investimento > 0) e descarta as zeradas. Campanha
+    ACTIVE com R$0 some; campanha PAUSED que gastou aparece.
+  • O script escolhe sozinho o bloco de métrica pelo objetivo da campanha
+    (mensagens WhatsApp / mensagens Direct / tráfego para o perfil / alcance).
+    Você NÃO decide isso e NÃO informa nada além dos campos acima.
+  • Somente a conta <meta_ad_account_id>. Não busque nenhuma outra conta.
+  • Se a conta não tiver nenhuma campanha com dado no período, grave [].
 
 ────────────────────────────────────────────────────────────
 PASSO 4 — Gerar o HTML
@@ -199,7 +241,7 @@ PASSO 8 — Resumo final
 ────────────────────────────────────────────────────────────
 Reporte em poucas linhas, sem inventar sucesso:
   • período usado (periodo.label);
-  • nº de campanhas Google incluídas no relatório;
+  • nº de campanhas Meta e Google incluídas no relatório;
   • investimento total (leia do HTML/log — NÃO recalcule);
   • caminho do <output_html>;
   • ID do rascunho criado no Gmail;
@@ -225,5 +267,13 @@ Se algo falhou, diga exatamente O QUÊ e em QUAL passo, e não crie o rascunho.
   (repo público, servida como image/png). URL absoluta em `AGENCIA_LOGO_URL` no
   `report_engine.py`; o Gmail carrega via proxy. Para trocar a logo, suba o novo
   PNG naquele repo (mesmo nome).
+- **Meta ligado (desde 26/07/2026):** conta `1233849868807941`
+  (`[BM 02] CA - HYDROCENTER`). O conector **Meta Ads** precisa estar na Routine.
+- **WhatsApp x Direct:** campanha de mensagem é rotulada POR CAMPANHA — o script
+  lê o NOME da campanha e decide o rótulo ("Mensagens no WhatsApp" / "Mensagens
+  no Direct"). Mantenha o canal na nomenclatura (ex.: `[MENSAGENS] [DIRECT]`,
+  `[MENSAGENS] [WHATSAPP]`). Sem o canal no nome o relatório mostra só
+  "Mensagens" (nunca chuta o canal errado). As duas podem rodar juntas: cada
+  bloco sai com seu próprio rótulo.
 - **Novos clientes:** duplique `clientes/hydrocenter.py`, troque o dict
   `CLIENTE`, e use este mesmo prompt trocando o nome do script e do cliente.
